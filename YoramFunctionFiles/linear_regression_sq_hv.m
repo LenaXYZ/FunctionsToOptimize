@@ -10,4 +10,6 @@ function hv = linear_regression_sq_hv(W, X, Y, v)
 %     v: vector to multiply by
 %
 
+[examples, dims] = size(X);
+
 hv= (X' * X/ examples)*v;

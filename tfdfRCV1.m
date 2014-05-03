@@ -1,19 +1,21 @@
-classdef RCV1like < SAAfunction
+classdef tfdfRCV1 < SAAfunction
     
     properties
         numTrainingPoints
         shortname
         data
         numVariables
+        classIndex
     end
     
     methods
         
-        function thefunc = RCV1like(data, shortname)
+        function thefunc = tfdfRCV1(data, shortname,classIndex)
             thefunc.data = data;
             thefunc.shortname=shortname;
             thefunc.numTrainingPoints = size(data,1);
-            thefunc.numVariables=length(data{1,1});
+            thefunc.numVariables=6253;
+            thefunc.classIndex=classIndex;
         end
         function result = get_f_g(varargin)
             % First argument - the point at which to evaluate function and
@@ -41,7 +43,6 @@ classdef RCV1like < SAAfunction
             
             fx       = 0;
             grad     = zeros(size(W));
-            vec_ones = ones(112919+1,1);
             
             % compute the function and gradient
             for i=1:BatchSize
@@ -49,16 +50,20 @@ classdef RCV1like < SAAfunction
                 tp_i=thisf.data{indices(i),1};
                 % get class label
                 label_i = thisf.data{indices(i),2};
-                if sum( (label_i{1,1}==4))==1
+                if sum( (label_i{1,1}==thisf.classIndex))==1
                     y_i=1;
                 else
                     y_i=0;
                 end
                 
                 % calculate gradient for given training pt
-                xTw        = sum( W(tp_i)); % x^T W
+                if size(tp_i,1)<size(W,1)
+                    tp_i(size(W,1))=0;
+                end
+                                
+                xTw        = tp_i'*W; % x^T W
                 h          = 1/(1+exp(-xTw) );
-                grad(tp_i) = grad(tp_i)+vec_ones(tp_i)*(h-y_i);
+                grad = grad+(tp_i)*(h-y_i);
                 
                 % calculate fx for given training pt
                 if h==1
@@ -83,7 +88,6 @@ classdef RCV1like < SAAfunction
             indices = randsample(thisf.numTrainingPoints,BatchSize);
             
             hv       = zeros(size(W));
-            vec_ones = ones(112919+1,1);
             
             for i=1:BatchSize
                 
@@ -91,10 +95,13 @@ classdef RCV1like < SAAfunction
                 tp_i=thisf.data{indices(i),1};
                 
                 % calculate gradient for given training pt
-                xTw        = sum( W(tp_i)); % x^T W(:,j)
-                xTv        = sum( V(tp_i));
+                if size(tp_i,1)<size(W,1)
+                    tp_i(size(W,1))=0;
+                end
+                xTw        = tp_i'*W; % x^T W(:,j)
+                xTv        = tp_i'*V;
                 h          = 1/(1+exp(-xTw) );
-                hv(tp_i)   =  hv(tp_i)+h*(1-h)*xTv*vec_ones(tp_i);
+                hv  =  hv+h*(1-h)*xTv*(tp_i);
                 
             end
             

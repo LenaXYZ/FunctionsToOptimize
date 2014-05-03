@@ -8,12 +8,12 @@ function hessian = binary_logistic_regression_hessian(W, X, Y)
 %     Y: labels                 (1 X examples)
 %
 
-[Wrows, ~] = size(W);
-assert(Wrows == 1);
+[~,Wcols] = size(W);
+assert(Wcols == 1);
 [examples, dims] = size(X);
 hessian=zeros(dims,dims);
-expinformula = exp(Y.*(W*X')); % 1 X examples
-everythingButX = Y.^2.*(expinformula)./(expinformula+1).^2;
+expinformula = exp(-Y'.*(X*W)); % 1 X examples
+everythingButX = (Y').^2.*(expinformula)./(expinformula+1).^2;
 for i = 1:examples
     hessian = hessian+X(i,:)'*X(i,:)*everythingButX(i);
 end
