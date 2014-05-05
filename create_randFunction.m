@@ -1,4 +1,4 @@
-function [trainFunction,testFunction] = create_yoram(optsYoram)
+function [trainFunction,testFunction] = create_randFunction(opts)
 fprintf('Creating Yoram train and test functions...\n');
 s = RandStream('mt19937ar','Seed',3);
 RandStream.setGlobalStream(s);% See 'generate_data(params)' on how the following params are used.
@@ -9,7 +9,7 @@ data_params.x.sparsity   = 0.25;
 data_params.w.dist       = 2;
 data_params.w.mu         = 0;
 data_params.w.sparsity   = 0.25;
-data_params.y.regression = optsYoram.regression;
+data_params.y.regression = opts.regression;
 data_params.y.type       = 1;
 if data_params.y.regression == 1      % linear regression
     data_params.classes = 1;
@@ -38,13 +38,13 @@ elseif data_params.y.regression == 2 && data_params.classes == 2
     model_params.hv_fn            = @binary_logistic_regression_hv;
     model_params.hessian_fn       = @binary_logistic_regression_hessian;
 end
-data = generate_data(data_params,optsYoram.fractionToTrain);
+data = generate_data(data_params,opts.fractionToTrain);
 data_for_train.X= data.Xtrain;
 data_for_train.Y= data.Ytrain;
-trainFunction = YoramFunction(data_for_train, model_params, 'yoram_train');
+trainFunction = RandFunction(data_for_train, model_params, 'yoram_train');
 data_for_test.X= data.Xtest;
 data_for_test.Y= data.Ytest;
-testFunction = YoramFunction(data_for_test, model_params, 'yoram_test');
+testFunction = RandFunction(data_for_test, model_params, 'yoram_test');
 
 fprintf('Yoram train and test functions created\n');
 end

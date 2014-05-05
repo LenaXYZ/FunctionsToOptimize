@@ -1,15 +1,15 @@
-classdef YoramFunction < SAAfunction    
+classdef RandFunction < SAAfunction    
     properties
         numTrainingPoints
         numVariables
         data
         shortname
-        model_params_yoram
+        model_params
     end
     methods        
-        function thefunc = YoramFunction(data,model_params, shortname)
+        function thefunc = RandFunction(data,model_params, shortname)
             thefunc.data=data;
-            thefunc.model_params_yoram = model_params;
+            thefunc.model_params = model_params;
             thefunc.numTrainingPoints=size(thefunc.data.X,1);
             thefunc.numVariables=size(thefunc.data.X,2);
             thefunc.shortname=shortname;
@@ -38,8 +38,8 @@ classdef YoramFunction < SAAfunction
             
             W = varargin{2};
             
-            result.g = thisf.model_params_yoram.gradient_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices))';
-            result.f = thisf.model_params_yoram.loss_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices));
+            result.g = thisf.model_params.gradient_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices))';
+            result.f = thisf.model_params.loss_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices));
         end
         
         function result=get_g_hv(varargin)
@@ -53,8 +53,8 @@ classdef YoramFunction < SAAfunction
             
             indices = randsample(thisf.numTrainingPoints,BatchSize);
             
-            result.g  = thisf.model_params_yoram.gradient_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices))';
-            result.hv = thisf.model_params_yoram.hv_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices),V);
+            result.g  = thisf.model_params.gradient_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices))';
+            result.hv = thisf.model_params.hv_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices),V);
                     
         end
         
@@ -71,7 +71,7 @@ classdef YoramFunction < SAAfunction
                 indices = randsample(thisf.numTrainingPoints,BatchSize);  
             end            
             
-            result.hessian = thisf.model_params_yoram.hessian_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices));
+            result.hessian = thisf.model_params.hessian_fn(W, thisf.data.X(indices,:), thisf.data.Y(:,indices));
             
         end
     end

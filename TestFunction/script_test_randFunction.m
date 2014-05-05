@@ -1,9 +1,9 @@
 %% Create function
-init_params_Yoram;
+init_params_randFunction;
 data = generate_data(data_params);
 data_for_train.X= data.Xtrain;
 data_for_train.Y= data.Ytrain;
-problem.trainFunction = YoramFunction(data_for_train, model_params, 'yoram_train');
+problem.trainFunction = YoramFunction(data_for_train, model_params, 'randFunction_train');
 thefunc = problem.trainFunction;
 
 %% Test f and g
