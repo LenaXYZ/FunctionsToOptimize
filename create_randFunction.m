@@ -1,10 +1,10 @@
 function [trainFunction,testFunction] = create_randFunction(opts)
-fprintf('Creating Yoram train and test functions...\n');
+fprintf('Creating rand train and test functions...\n');
 s = RandStream('mt19937ar','Seed',3);
 RandStream.setGlobalStream(s);% See 'generate_data(params)' on how the following params are used.
-data_params.dims         = 50;
+data_params.dims         = opts.numVars;
 data_params.x.mu         = 0;
-data_params.x.size       = 10000;
+data_params.x.size       = opts.numDataPoints;
 data_params.x.sparsity   = 0.25;
 data_params.w.dist       = 2;
 data_params.w.mu         = 0;
@@ -41,10 +41,10 @@ end
 data = generate_data(data_params,opts.fractionToTrain);
 data_for_train.X= data.Xtrain;
 data_for_train.Y= data.Ytrain;
-trainFunction = RandFunction(data_for_train, model_params, 'yoram_train');
+trainFunction = RandFunction(data_for_train, model_params, 'rand_train');
 data_for_test.X= data.Xtest;
 data_for_test.Y= data.Ytest;
-testFunction = RandFunction(data_for_test, model_params, 'yoram_test');
+testFunction = RandFunction(data_for_test, model_params, 'rand_test');
 
-fprintf('Yoram train and test functions created\n');
+fprintf('Rand train and test functions created\n');
 end

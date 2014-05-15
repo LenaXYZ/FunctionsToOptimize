@@ -47,6 +47,31 @@ switch testIndex
             gradientEstimate=gradientEstimate+result.g/thefunc.numTrainingPoints;
         end
         fprintf('The relative error is %13.3e\n', norm(gradientEstimate -trueGradient )/norm(trueGradient));
+    case 4
+        fprintf('Test hessian vector computation. Tiny numbers are good.\n ')
+        vecc = randn(thefunc.numVariables,1);
+       
+        
+        res1 = thefunc.get_g_hv(x,vecc);
+        
+        estimatedHV = res1.hv;
+        
+        yo = thefunc.get_f_g(x );
+        
+        gradientAtX = yo.g;
+        
+        epsilons = [1e-10;1e-9;1e-8;1e-7;1e-6;1e-5;1e-4;1e-3;1e-2];
+        
+        for i=1:size(epsilons,1)
+            epsilon=epsilons(i);
+            
+           
+            
+            displaced = thefunc.get_f_g(x + epsilon* vecc);
+            res1 = (displaced.g -gradientAtX)/epsilon;
+            errrorrr  = norm(res1 -estimatedHV )/norm(estimatedHV);
+            fprintf('epsilon = %i  error = %i\n', epsilon, errrorrr);
+        end
 end
 end
 

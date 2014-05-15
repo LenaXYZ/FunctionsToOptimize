@@ -24,6 +24,7 @@ classdef RandFunction < SAAfunction
             thisf=varargin{1};
             if nargin==2
                 indices = 1:thisf.numTrainingPoints;
+                BatchSize = thisf.numTrainingPoints;
             elseif nargin==3
                 BatchSize = varargin{3};
                 indices = randsample(thisf.numTrainingPoints,BatchSize);
@@ -46,10 +47,27 @@ classdef RandFunction < SAAfunction
                         
             thisf=varargin{1};
             
+            thisf=varargin{1};
+            if nargin==3
+                indices = 1:thisf.numTrainingPoints;
+                BatchSize = thisf.numTrainingPoints;
+            elseif nargin==4
+                BatchSize = varargin{4};
+                indices = randsample(thisf.numTrainingPoints,BatchSize);
+            elseif nargin == 5
+                BatchSize = varargin{4};
+                indices = varargin{5};
+                if size(indices,2)~=BatchSize
+                    fprintf('size of indices must match BatchSize');
+                    return;
+                end
+            else
+                fprintf('error');
+            end
+            
             W = varargin{2};
             V = varargin{3};
             
-            BatchSize = varargin{4};
             
             indices = randsample(thisf.numTrainingPoints,BatchSize);
             
